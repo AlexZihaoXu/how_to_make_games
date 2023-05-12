@@ -129,29 +129,33 @@ I'll be using the following Processing template for demonstration.
 
 ```java
 void setup() {
-    size(500, 500); // Set window size to 500x500
+  size(500, 400);
+  onStart();
 }
 
-double lastTickTime = System.currentTimeMillis() / 1000.0;
+long lastUpdateTime = millis();
 
 void draw() {
-    
-    // Calculate delta time
-    double now = System.currentTimeMillis() / 1000.0;
-    double dt = now - lastTickTime;
-    lastTickTime = now;
-    
-    onUpdate((float) now, (float) dt); // Processing uses float for their draw functions
-    onRender();
-       
+  // Calcuate delta time
+  long now = millis();
+  long dt = now - lastUpdateTime;
+  lastUpdateTime = now;
+  
+  onUpdate(now / 1000.0f, dt / 1000.0f);
+  onRender();
+  
+}
+
+void onStart() {
+  
 }
 
 void onUpdate(float now, float dt) {
-    // ...
+
 }
 
 void onRender() {
-    // ...
+  
 }
 ```
 
