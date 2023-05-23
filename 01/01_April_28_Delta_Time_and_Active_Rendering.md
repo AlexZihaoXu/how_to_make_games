@@ -110,6 +110,12 @@ public class Game extends JFrame {
             }
         }
     }
+    
+    // An example of how you should start the game loop
+    public static void main(String[] args) {
+        Game game = new Game(); // Create an instance
+        game.mainLoop(); // Run game loop
+    }
 }
 ```
 
