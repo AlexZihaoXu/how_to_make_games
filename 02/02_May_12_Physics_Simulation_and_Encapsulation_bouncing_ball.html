@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://cdn.jsdelivr.net/npm/p5@1.6.0/lib/p5.js"></script>
+<style>
+    html,
+    body {
+        height: 100%;
+    }
+
+    body {
+        margin: 0;
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+    }
+</style>
+
+<head>
+
+</head>
+
+<body>
+    <script>
+
+        let y = 0;
+        let vy = 0;
+
+        function setup() {
+            createCanvas(400, 400);
+            y = 200;
+        }
+
+        class Clock {
+            record = Date.now()
+
+            constructor() {
+
+            }
+
+            reset() {
+                this.record = Date.now()
+            }
+
+            get now() {
+                return (Date.now() - this.record) / 1000
+            }
+        }
+
+
+        dtClock = new Clock()
+
+        function draw() {
+
+            let dt = dtClock.now
+            dtClock.reset()
+
+            y += vy * dt
+            vy += 1000 * dt
+
+            if (y > height) {
+                y = height
+                vy = -Math.min(625, abs(vy))
+            }
+
+            background(0);
+            ellipse(width / 2, y, 20, 20);
+
+            push()
+
+            fill(255)
+            textSize(24)
+            text('vy = ' + vy.toFixed(1), 14, 32)
+            text('y = ' + y.toFixed(1), 14, 32 * 2)
+            fill(100, 255, 120)
+            textSize(16)
+            text('acceleration: 1000px/s  [down]', 14, 32 * 2.75)
+            textSize(12)
+            text('2', 175, 32 * 2.75 - 4)
+
+            pop()
+
+            push()
+
+            noFill()
+            stroke(150)
+            strokeWeight(2)
+            translate(width / 2 - 100, y)
+            circle(0, 0, 20)
+            if (vy < 0) {
+                stroke(100, 160, 255)
+                fill(100, 160, 255)
+            } else {
+                stroke(255, 100, 120)
+                fill(255, 100, 120)
+            }
+            line(0, 0, 0, vy / 10)
+            translate(0, vy / 10)
+
+            push()
+            if (vy < 0) {
+                scale(1, -1)
+            }
+            line(0, 0, -5, -5)
+            line(0, 0, 4, -5)
+
+            pop()
+
+            textSize(13)
+            noStroke()
+            text('vy', 5, 0)
+
+
+
+            pop()
+        }
+    </script>
+</body>
+
+</html>

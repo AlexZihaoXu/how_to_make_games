@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://cdn.jsdelivr.net/npm/p5@1.6.0/lib/p5.js"></script>
+<style>
+    html,
+    body {
+        height: 100%;
+    }
+
+    body {
+        margin: 0;
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+    }
+</style>
+
+<head>
+
+</head>
+
+<body>
+    <script>
+
+        class Ball {
+            y = 0
+            x = 0
+            vx = 0
+            vy = 0
+            minVal = Math.random() * 250 + 500
+            constructor() {
+                this.x = 200;
+                this.y = 200;
+                this.vx = Math.random() * 1000 - 500;
+                this.vy = Math.random() * 200 - 100;
+            }
+
+            onUpdate(dt) {
+                this.y += this.vy * dt
+                this.x += this.vx * dt
+                this.vy += 1000 * dt
+
+                if (this.y > height) {
+                    this.y = height
+                    this.vy = -Math.min(this.minVal, abs(this.vy))
+                }
+                if (this.x < 0) { // Inverse x-velocity and prevent overshoot
+                    this.x = 0;
+                    this.vx = abs(this.vx);
+                }
+                if (this.x > width) { // Inverse x-velocity and prevent overshoot
+                    this.x = width;
+                    this.vx = -abs(this.vx);
+                }
+            }
+
+            onRender() {
+                ellipse(this.x, this.y, 20, 20);
+            }
+        }
+
+        let balls = []
+
+        function setup() {
+            createCanvas(400, 400);
+            for (let i = 0; i < 10; i++) {
+                balls.push(new Ball())
+            }
+        }
+
+        class Clock {
+            record = Date.now()
+
+            constructor() {
+
+            }
+
+            reset() {
+                this.record = Date.now()
+            }
+
+            get now() {
+                return (Date.now() - this.record) / 1000
+            }
+        }
+
+
+        dtClock = new Clock()
+
+        function draw() {
+
+            let dt = dtClock.now
+            dtClock.reset()
+
+            
+
+            background(0);
+
+            for (const ball of balls) {
+                ball.onUpdate(dt)
+                ball.onRender()
+            }
+            
+        }
+    </script>
+</body>
+
+</html>

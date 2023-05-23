@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://cdn.jsdelivr.net/npm/p5@1.6.0/lib/p5.js"></script>
+<style>
+    html,
+    body {
+        height: 100%;
+    }
+
+    body {
+        margin: 0;
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+    }
+</style>
+
+<head>
+
+</head>
+
+<body>
+    <script>
+
+        let y = 0, x = 0;
+        let vy = 0, vx = 0;
+
+        function setup() {
+            createCanvas(400, 400);
+            y = 200;
+            x = 200;
+            vx = 500;
+        }
+
+        class Clock {
+            record = Date.now()
+
+            constructor() {
+
+            }
+
+            reset() {
+                this.record = Date.now()
+            }
+
+            get now() {
+                return (Date.now() - this.record) / 1000
+            }
+        }
+
+
+        dtClock = new Clock()
+
+        function draw() {
+
+            let dt = dtClock.now
+            dtClock.reset()
+
+            y += vy * dt
+            x += vx * dt
+            vy += 1000 * dt
+
+            if (y > height) {
+                y = height
+                vy = -Math.min(625, abs(vy))
+            }
+            if (x < 0) { // Inverse x-velocity and prevent overshoot
+                x = 0;
+                vx = abs(vx);
+            }
+            if (x > width) { // Inverse x-velocity and prevent overshoot
+                x = width;
+                vx = -abs(vx);
+            }
+
+            background(0);
+            ellipse(x, y, 20, 20);
+
+            push()
+
+            fill(255)
+            textSize(24)
+            text('vel = {' + vx.toFixed(1) + ', ' + vy.toFixed(1) + '}', 14, 32)
+            text('pos = {' + x.toFixed(1) + ', ' + y.toFixed(1) + '}', 14, 32 * 2)
+            fill(100, 255, 120)
+            textSize(16)
+            text('acceleration: 1000px/s  [down]', 14, 32 * 2.75)
+            textSize(12)
+            text('2', 175, 32 * 2.75 - 4)
+
+            pop()
+        }
+    </script>
+</body>
+
+</html>
