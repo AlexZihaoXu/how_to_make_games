@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://cdn.jsdelivr.net/npm/p5@1.6.0/lib/p5.js"></script>
+<style>
+    html,
+    body {
+        height: 100%;
+    }
+
+    body {
+        margin: 0;
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+    }
+</style>
+
+<head>
+
+</head>
+
+<body>
+    <script>
+
+
+        let img
+        function setup() {
+            createCanvas(400, 400);
+            img = loadImage('mario.png')
+        }
+
+        class Clock {
+            record = Date.now()
+
+            constructor() {
+
+            }
+
+            reset() {
+                this.record = Date.now()
+            }
+
+            get now() {
+                return (Date.now() - this.record) / 1000
+            }
+        }
+
+
+        dtClock = new Clock()
+
+        let translateX = 0;
+        let translateY = 0;
+        let rotation = 0;
+        let scaling = 1;
+        let state = [
+            '', '', '', ''
+        ]
+        const timer = new Clock()
+
+
+        function animate(dt) {
+            const now = timer.now
+
+            if (now < 0.7) {
+
+            } else if (now < 1.7) {
+                translateX += ((width / 2) - translateX) * dt * 8
+                translateY += ((height / 2) - translateY) * dt * 8
+                state[0] = 'translate(width / 2, height / 2)'
+            } else if (now < 2.7) {
+                rotation += (Math.PI / 4 - rotation) * dt * 8; 
+                state[1] = 'rotate(Math.PI / 4)'
+            } else if (now < 3.7) {
+                scaling += (2 - scaling) * dt * 8
+                state[2] = 'scale(2, 1)'
+            } else if (now < 4.7) {
+                state[3] = 'image(img, ...)'
+            } else if (now < 5.7) {
+                timer.reset()
+                translateX = 0;
+                translateY = 0;
+                rotation = 0;
+                scaling = 1;
+                state = ['', '', '', '']
+            }
+        }
+
+        function doTransformation() {
+
+            translate(translateX, translateY)
+            rotate(rotation)
+            scale(scaling, 1)
+
+        }
+
+        function draw() {
+
+            let dt = dtClock.now
+            dtClock.reset()
+
+            push()
+            animate(dt)
+            translate(translateX, translateY)
+            rotate(rotation)
+            background(200)
+
+            stroke(255, 0, 0)
+            line(-500, 0, 500, 0)
+            
+            stroke(0, 0, 255)
+            line(0, 500, 0, -500)
+
+            if (state[3].length > 0) {
+                push()
+                scale(scaling, 1)
+                scale(0.253, 0.2)
+                image(img, -img.width / 2, -img.height / 2 + 4)
+                pop()
+            } else {
+                fill(0, 220, 255, 50)
+                noStroke()
+                scale(scaling, 1)
+                rect(-50, -50, 100, 100)
+                push()
+                tint(255, 255, 255, 20)
+                scale(0.254, 0.2)
+                image(img, -img.width / 2, -img.height / 2 + 4)
+                pop()
+            }
+            
+
+            
+            pop()
+
+            push()
+
+            textSize(14)
+            textAlign(LEFT)
+            textFont('monospace')
+
+            push()
+            translate(-120, 0)
+            for (let i=0; i<state.length; i++) {
+                let line = state[i]
+                fill(180)
+                text(line, width / 2 + 1, 28 + 1)
+                text(line, width / 2 + 1, 28 - 1)
+                text(line, width / 2 - 1, 28 - 1)
+                text(line, width / 2 - 1, 28 + 1)
+                fill(0)
+                text(line, width / 2, 28)
+                translate(0, 20)
+            }
+            pop();
+
+            pop()
+
+            push()
+
+            push()
+            translate(translateX, translateY)
+            textSize(12)
+
+            fill(200, 200, 200, 100)
+            text('(0, 0)', 4 - 1, 16)
+
+            fill(200, 200, 200, 100)
+            text('(0, 0)', 4 + 1, 16)
+
+            fill(200, 200, 200, 100)
+            text('(0, 0)', 4, 16 + 1)
+
+            fill(200, 200, 200, 100)
+            text('(0, 0)', 4, 16 - 1)
+
+            fill(30)
+            text("(0, 0)", 4, 16)
+            noStroke()
+            fill(0, 255, 0)
+            circle(0, 0, 5)
+            pop()
+
+            doTransformation()
+
+            pop()
+
+            push()
+
+            
+            noStroke()
+            fill(120, 100, 0)
+            circle(0, 0, 4)
+
+            textSize(14)
+            fill(200, 50, 40)
+            translate(translateX, translateY)
+            rotate(rotation)
+
+            push()
+            translate(80 * scaling, 0)
+            rotate(-rotation)
+            fill(100, 30, 20, 150)
+            text("+x", 1, -2 + 1)
+            fill(200, 50, 40)
+            text("+x", 0, -2)
+            pop()
+            
+            push()
+            fill(150, 25, 20)
+            translate(-95 * scaling, 0)
+            rotate(-rotation)
+            fill(100, 30, 20, 150)
+            text("-x", 1, -2 + 1)
+            fill(200, 50, 40)
+            text("-x", 0, -2)
+            pop()
+
+            push()
+            translate(5, 80)
+            rotate(-rotation)
+            fill(20, 30, 130, 150)
+            text("+y", 1, 1)
+            fill(40, 50, 200)
+            text("+y", 0, 0)
+            pop()
+            
+            push()
+            translate(5, -80)
+            rotate(-rotation)
+            fill(20, 30, 130, 150)
+            text("+y", 1, 1)
+            fill(40, 50, 200)
+            text("+y", 0, 0)
+            pop()
+
+            pop()
+            
+        }
+    </script>
+</body>
+
+</html>
